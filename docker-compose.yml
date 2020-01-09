@@ -1,0 +1,67 @@
+version: "3.7"
+services:
+
+  service-registry:
+    build:
+      context: ./service-registry
+      dockerfile: Dockerfile
+    ports:
+      - 8761:8761
+
+  # root-gateway:
+  #   build:
+  #     context: ./root-gateway
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - EUREKA_SERVICE_URL=http://service-registry:8761
+  #   ports:
+  #     - 8080:8080
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 5000:8080
+
+  # auth:
+  #   build:
+  #     context: ./auth
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - EUREKA_SERVICE_URL=http://service-registry:8761
+
+  users-api:
+    build:
+      context: ./users-api
+      dockerfile: Dockerfile
+    environment:
+      - EUREKA_SERVICE_URL=http://service-registry:8761
+      - DB_URL=users-db:5432
+    ports:
+      - 9002:9002
+
+  users-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: mydb
+    ports:
+      - 5432:5432
+
+  # posts-db:
+  #   image: postgres
+  #   restart: always
+  #   environment:
+  #     POSTGRES_USERNAME: postgres
+  #     POSTGRES_PASSWORD: dev
+  #     POSTGRES_DB: mydb
+
+  # comments-db:
+  #   image: postgres
+  #   restart: always
+  #   environment:
+  #     POSTGRES_USERNAME: postgres
+  #     POSTGRES_PASSWORD: dev
+  #     POSTGRES_DB: mydb
