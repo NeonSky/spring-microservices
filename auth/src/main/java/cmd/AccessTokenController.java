@@ -17,7 +17,7 @@ public class AccessTokenController {
 
     @GetMapping("/")
     public String home() {
-        return "Welcome! This endpoint is public";
+        return "Welcome! This auth endpoint is public";
     }
 
     @GetMapping("/token")
