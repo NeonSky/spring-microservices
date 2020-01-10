@@ -1,6 +1,13 @@
 version: "3.7"
 services:
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+
   service-registry:
     build:
       context: ./service-registry
@@ -8,14 +15,14 @@ services:
     ports:
       - 8761:8761
 
-  # root-gateway:
-  #   build:
-  #     context: ./root-gateway
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     - EUREKA_SERVICE_URL=http://service-registry:8761
-  #   ports:
-  #     - 8080:8080
+  root-gateway:
+    build:
+      context: ./root-gateway
+      dockerfile: Dockerfile
+    environment:
+      - EUREKA_SERVICE_URL=http://service-registry:8761
+    ports:
+      - 8762:8762
 
   adminer:
     image: adminer
@@ -23,12 +30,14 @@ services:
     ports:
       - 5000:8080
 
-  # auth:
-  #   build:
-  #     context: ./auth
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     - EUREKA_SERVICE_URL=http://service-registry:8761
+  auth:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    environment:
+      - EUREKA_SERVICE_URL=http://service-registry:8761
+    ports:
+      - 7000:7000
 
   users-api:
     build:
@@ -38,7 +47,7 @@ services:
       - EUREKA_SERVICE_URL=http://service-registry:8761
       - DB_URL=users-db:5432
     ports:
-      - 9002:9002
+      - 9000:9000
 
   users-db:
     image: postgres
